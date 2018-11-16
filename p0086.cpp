@@ -204,8 +204,41 @@ void f6()
     cout << "Bye!" << endl;
 }
 
+// zad.10
+void f7()
+{
+    cout << "podaj operację i operandy dwa oddzielone spacjami: ";
+    string operation;
+    double num1, num2 = 0;
+    
+    
+    
+    while (cin >> operation >> num1 >> num2)
+    {
+
+        if (operation == "+" or operation == "plus")
+            cout << num1+num2 << endl;
+        else if (operation == "-" or operation == "minus")
+            cout << num1-num2 << endl;
+        else if (operation == "*" or operation == "mul")
+            cout << num1*num2 << endl;
+        else if (operation == "/" or operation == "div")
+                {
+                    if (num2 != 0)
+                        cout << num1/num2 << endl;
+                    else
+                        error("nie dziele przez ", operation);
+                }
+        else
+            error("nie obsluguje tego", operation);
+        cout << "jeszcze raz: ";
+    }
+    
+}
+
 
 int main()
+try
 {
 
 //    f1();
@@ -214,8 +247,11 @@ int main()
 //    f3();
 //    f4();
 //    f5();
-    f6();
-    
-
+//    f6();
+    f7();    
+}
+catch (runtime_error e)
+{
+    cout << e.what() << endl;
 }
 
