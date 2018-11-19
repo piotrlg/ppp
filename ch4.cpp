@@ -147,7 +147,7 @@ void f9()
 //str 126
 void f10()
 {
-    int a,b=0;
+    int a=0,b=0;
     while(cin>>a>>b)
     {
         //ten warunek nie jest nigdy wykonywany
@@ -162,7 +162,7 @@ void f10()
 //str 126
 void f11()
 {
-    int a,b=0;
+    int a=0,b=0;
     while(cin>>a>>b)
     {   
         //ten warunek nie jest nigdy wykonywany
@@ -183,7 +183,7 @@ void f11()
 
 void f12()
 {
-    double a,b=0.0;
+    double a=0.0,b=0.0;
     while(cin>>a>>b)
     {   
         if(a<b)
@@ -195,9 +195,10 @@ void f12()
     }
 }
 
+//dril 5
 void f13()
 {
-    double a,b,dif=0.0;
+    double a=0.0,b=0.0,dif=0.0;
     while(cin>>a>>b)
     {   
         cout << 1.0/100<<endl;
@@ -222,9 +223,10 @@ void f13()
     }
 }
 
+//dril 6
 void f14()
 {
-    double a,smallest,largest=0.0;
+    double a=0.0,smallest=0.0,largest=0.0;
     
     //obsluga pierwszej wklepanej wartosci
     //nie ma jeszcze pojecia najmniejszej i najwiekszej wartosci
@@ -250,6 +252,7 @@ void f14()
     }
 }
 
+//dril 8
 void f15()
 {
     double length=0.0;
@@ -271,12 +274,140 @@ void f15()
     }
 }
 
+//dril 9
+void f16()
+{
+    double value=0.0,smallest=0.0,largest=0.0,sum=0.0;
+    int count=0;
+    double normalized_value=0.0;
+    string unit;
+    int bad_unit=0;
+    int first_run=1;
+    
+    while(cin>>value>>unit)
+    {   
+        bad_unit=0; //assume good unit
+        
+        //unit validation and to meters conversion
+        if (unit=="cm")      normalized_value=value/100; 
+        else if (unit=="m")  normalized_value=value;
+        else if (unit=="in") normalized_value=value/100*2.54;
+        else if (unit=="ft") normalized_value=value/100*2.54*12;
+        else
+        {
+            //ugly but no other idea how to ignore values of bad units
+            cout<<"Bad unit, ignoring"<<endl;
+            bad_unit=1;
+            --count; //don't count bad values
+        }
+
+        //special case of first loop
+        if(first_run && !bad_unit)
+        {
+            sum=normalized_value;
+            smallest=normalized_value;
+            largest=normalized_value;
+            first_run=0;
+        }
+        else if(!bad_unit)
+        {
+            sum+=normalized_value;
+            if(normalized_value<smallest) smallest=normalized_value;
+            else 
+            if (normalized_value>largest) largest=normalized_value;
+        }
+        ++count;
+    }
+    cout << "Smallest m: "<< smallest<<endl;
+    cout << "Largest m: "<< largest<<endl;
+    cout << "Sum m: "<< sum<<endl;
+    cout << "Counter: "<< count <<endl;
+}
+
+
+//dril 10, 11
+void f17()
+{
+    double value=0.0,smallest=0.0,largest=0.0,sum=0.0;
+    int count=0;
+    double normalized_value=0.0;
+    string unit;
+    int bad_unit=0;
+    int first_run=1;
+    vector<double> values;
+    
+    while(cin>>value>>unit)
+    {   
+        bad_unit=0; //assume good unit
+        
+        //unit validation and to meters conversion
+        if (unit=="cm")      normalized_value=value/100; 
+        else if (unit=="m")  normalized_value=value;
+        else if (unit=="in") normalized_value=value/100*2.54;
+        else if (unit=="ft") normalized_value=value/100*2.54*12;
+        else
+        {
+            //ugly but no other idea how to ignore values of bad units
+            cout<<"Bad unit, ignoring"<<endl;
+            bad_unit=1;
+            --count; //don't count bad values
+        }
+
+        //special case of first loop
+        if(first_run && !bad_unit)
+        {
+            sum=normalized_value;
+            smallest=normalized_value;
+            largest=normalized_value;
+            first_run=0;
+        }
+        else if(!bad_unit)
+        {
+            sum+=normalized_value;
+            if(normalized_value<smallest) smallest=normalized_value;
+            else 
+            if (normalized_value>largest) largest=normalized_value;
+        }
+        
+        values.push_back(normalized_value);
+        ++count;
+        
+    }
+    
+    sort(values);
+    cout << "Values entered (sorted and metered): "; 
+    for(auto v: values)
+        cout << v << ", ";
+    cout << endl;
+    
+    cout << "Smallest m: "<< smallest<<endl;
+    cout << "Largest m: "<< largest<<endl;
+    cout << "Sum m: "<< sum<<endl;
+    cout << "Counter: "<< count <<endl;
+    
+}
+
+//
+// Exercises, page 128
+//
+
+//ex.2
+void ex2()
+{
+    vector<double> temps;
+    for (double temp; cin >> temp;)
+        temps.push_back(temp);
+    
+    // median
+    sort(temps);
+    cout << "median: " << temps.size()/2 << endl;
+}
 
 
 int main()
 try
 {
-    f15();
+    ex2();
 }
 catch (runtime_error e)
 {
