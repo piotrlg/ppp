@@ -4,7 +4,7 @@
 
 Resolutions
 https://github.com/bewuethr/stroustrup-ppp/tree/master/chapter04
-
+http://stroustrup.com/Programming/Solutions/Ch4.html
 */
 
 
@@ -603,10 +603,401 @@ void ex6()
 }
 
 
+//ex.7
+//my solution allows to: 1 + 2, one + two, 1 + two
+//spaces are must
+
+//helper function
+//convert string value to int, like in example 6
+int spelled_out_to_digit(const string& s, const vector<string>& v)
+{
+    for(int i=0; i<s.size(); ++i)
+        if (s == v[i]) return(i);
+
+    return(-1); //bad input
+}
+
+
+void ex7()
+{
+    double val1=0;
+    double val2=0;
+    string s_val1;
+    string s_val2;
+    char oper=' ';
+    bool run=true;
+    vector<string> s_values{"zero","one","two","three","four","five",
+        "six","seven","eight","nine"};
+    
+    while(run)
+    {
+        cout << "Enter 2 values or strings and operator (val1 oper val2): ";
+        if (cin>>s_val1>>oper>>s_val2)
+        {
+            // convert input to digit
+            val1=spelled_out_to_digit(s_val1, s_values);
+            if (val1==-1) //string input out of vectors s_values
+                val1=stod(s_val1); //try string conversion to double
+            
+            val2=spelled_out_to_digit(s_val2, s_values);
+            if (val2==-1) 
+                val2=stod(s_val2);
+            
+            switch (oper)
+            {
+                case '+':
+                    cout << "The sum of " << val1 << " and " << val2 
+                    << " is " << val1 + val2 << endl;
+                    break; 
+                case '-':
+                    cout << "The subtraction of " << val1 << " and " << val2 
+                    << " is " << val1 - val2 << endl;
+                    break;
+                case '*':
+                    cout << "The multiplication of " << val1 << " and " << val2 
+                    << " is " << val1 * val2 << endl;
+                    break;
+                case '/':
+                    if (val2!=0) cout << "The division of " << val1 << " and " << val2 
+                        << " is " << val1 / val2 << endl;
+                    else
+                        cout << "Div by 0 prohibitetd!"<<endl;
+                    break;
+                default:
+                    cout << "Unknown operation!" << endl;
+                    run=false;
+                    break;
+            }
+        }
+            else
+                run=false;
+    }    
+    
+}
+
+
+//ex. 8
+//with every grain_limits print corresponding grains and number of squares
+void ex8()
+{
+    int squares=0;
+    int grain_limits=1000;
+    int grains=1;
+    
+    while(grains<=1000000000)
+    {
+        grains*=2;
+        ++squares;
+        if (grains >= grain_limits)
+        {
+            grain_limits*=1000;
+            cout << "To have " << grains << " grains" << " you need " 
+                 << squares <<" squares" <<endl;
+        }
+    }
+}
+
+//ex. 9
+void ex9()
+{
+    int i_squares=1;
+    double d_squares=1;
+    
+    for(int i=0; i<64; ++i)
+    {
+        i_squares*=2;
+        d_squares*=2;
+        cout << "counter: " << i+1;
+        cout << "\tint squares: \t" << i_squares;
+        cout << "\tdouble squares: \t" << d_squares<<endl;
+    }
+}
+
+//ex. 10
+//not exactly what BS was thinking about in this exercise
+void ex10()
+{
+    vector<string> answers{"rock", "paper", "scisors"};
+    char inp=0;
+    int idx=0;
+    int factor=1;
+    int max_index=0;
+    
+    max_index=answers.size()-1;
+    
+    while(true)
+    {
+        cout<<"Press n for next round, q to quit: ";
+        cin>>inp;
+        if (inp=='q')
+            break;
+        cout << answers[idx]<<endl;
+        idx+=factor;
+        if(idx>=max_index) 
+            factor=-1;
+        if(idx<=0)
+            factor=1;
+    }
+}
+
+//ex.11
+//find prime numbers between 1 and 100
+
+bool is_prime(const int i)
+{
+    //0, 1 are not considered as primes
+    if (i<=0 || i==1)
+        return false;
+    
+    for (int j=2; j<i; ++j)
+        if (i%j==0)
+            return false; //not a prime = divides by some number 
+            
+    return true; //prime
+}
+
+void ex11()
+{
+    vector<int> primes; //primes storage
+    
+    for (int i=1; i<=100; ++i)
+        if (is_prime(i))
+            primes.push_back(i);
+
+    cout << "Primes in range 1 to 100 are: ";
+    for (auto p: primes)
+        cout << p << ", ";
+    cout <<endl;
+}
+
+
+//ex.12
+void ex12()
+{
+    int max=100000;
+    
+    //cout << "Tell me upper limit of prime search: ";
+    //cin >> max;
+    
+    vector<int> primes; //primes storage
+    
+    for (int i=1; i<=max; ++i)
+        if (is_prime(i))
+            primes.push_back(i);
+        
+    cout << "Number of primes found: " << primes.size() << endl;
+    
+//     cout << "Primes in range 1 to " << max << " are: ";
+//     for (auto p: primes)
+//         cout << p << ", ";
+//     cout <<endl;
+}
+
+//--------
+//ex.13
+//sieve of Eratosthenes
+//https://pl.wikipedia.org/wiki/Sito_Eratostenesa
+//
+void init_numbers(vector<int>& numbers, int size)
+{
+    for (int i=2; i<=size; ++i)
+        numbers.push_back(i);
+}
+
+//pretty print only primes - ie values not set to -1
+void print_primes(const vector<int>& primes)
+{
+    cout << "Vector of primes:" << endl;
+
+    int columns=0;
+    int n_of_primes=0;
+    int j=0;
+    int i=0;
+    
+    //count number of primes
+    for (auto p: primes)
+        if (p!=-1) ++n_of_primes;
+    columns=sqrt(n_of_primes);
+    cout << "columns: " << columns<<endl;
+    
+    while (i<primes.size())
+    {
+        if(primes[i]!=-1)
+        {
+            cout << primes[i] <<"\t";
+            ++j;
+        }
+        if (j==columns)
+        {
+            cout << endl;
+            j=0;
+        }
+        ++i;
+    }       
+    cout << endl;
+}
+
+//pretty print vector
+template<typename T> void print_vector(const vector<T>& v)
+{
+    cout << "vector size: " << v.size() << endl;
+    
+    int columns=sqrt(v.size());
+    int j=0;
+    int i=0;
+    
+    while (i<v.size())
+    {
+        if (j==columns)
+        {
+            cout << endl;
+            j=0;
+        }
+        cout<< v[i]<<"\t";
+        ++j;
+        ++i;
+    }       
+    cout << endl;
+}
+
+
+//set to -1 not primes for every num
+void set_not_primes(vector<int>& numbers, int num)
+{
+    int idx=2;
+    int j=2;
+  
+    //already checked for num (-2 becasue of inndex shift)
+    if (numbers[num-2]==-1) return;
+    
+    while (idx<numbers.size()-num)
+    {
+        idx=j*num-2;
+        numbers[idx]=-1;
+        ++j;
+    }
+}
+
+
+void ex13()
+{
+    vector<int> numbers;
+    int max=100;
+
+    init_numbers(numbers, max);
+    
+    cout << "Sieve of Eratosthenes"<<endl;
+
+    int n=sqrt(numbers.size());
+    for (int i=2; i<=n; ++i)
+        set_not_primes(numbers, i);
+    
+    print_primes(numbers);
+}
+
+
+//ex.14
+void ex14()
+{
+    vector<int> numbers;
+    int max=0;
+    
+    cout << "What is the maximum number of the set? ";
+    cin >> max;
+    if (max<1) error("max below 1 is not allowed!");
+    
+    init_numbers(numbers, max);
+    
+    cout << "Sieve of Eratosthenes"<<endl;
+    
+    int n=sqrt(numbers.size());
+    for (int i=2; i<=n; ++i)
+        set_not_primes(numbers, i);
+    
+    print_primes(numbers);
+}
+
+//ex.15
+//find first n primes
+void ex15()
+{
+    int n=0;
+    
+    cout <<"enter the first n primes to find: ";
+    cin >> n;
+    
+    vector<int> primes; //primes storage
+    int prime_counter=0;
+    int i=2;
+    
+    while (prime_counter<n)
+    {
+        if (is_prime(i))
+        {
+            primes.push_back(i);
+            ++prime_counter;
+        }
+        ++i;
+    }
+    
+    print_primes(primes);
+}
+
+
+//ex.16
+//find the most frequent number in a set of int's
+void ex16()
+{
+    vector<int> values={12,39,23,14,12,19,25,12,1,4,3,4,5,3,4,5,6,5,4,3,1,2,7,4,9,7,4,3,7,5,3};
+    int prev_val=0;
+    int c__val=0;
+    int c_counter=1;
+    int prev_counter=1;
+    int max_counter=0;
+    
+    cout << "initial values\n";
+    print_vector(values);
+    
+    sort(values);
+    
+    cout << "sorted values\n";
+    print_vector(values);
+    
+    prev_val=values[0];
+    for (int i=1; i<values.size(); ++i)
+    {
+        if (prev_val==values[i]) //the same value
+        {
+            ++counter;
+            
+          //  max_val=prev_val;
+            cout << "max_val: " << max_val<< " max_counter " << max_counter <<endl;
+        }
+        else
+        {
+            prev_val=values[i];
+            max_counter=counter;
+           // counter=1;
+        }
+        
+       
+        
+    }
+    
+    cout << "mode: " << max_counter << endl;
+    
+
+}
+
+
 int main()
 try
 {
-    ex6();
+    ex16();
+}
+catch (invalid_argument e)
+{
+    cout << "zly argument w " << e.what() << endl;
 }
 catch (runtime_error e)
 {
